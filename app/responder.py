@@ -72,7 +72,6 @@ class Responder:
 
     def build_reply(self, incoming_text: str) -> str:
         text = incoming_text.strip()
-        lower = text.lower()
 
         builtin_reply = self.build_builtin_reply(text)
         if builtin_reply is not None:

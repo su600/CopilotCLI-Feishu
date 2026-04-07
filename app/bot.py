@@ -74,11 +74,8 @@ class FeishuBot:
             )
 
     def _process_text_message(self, message_id: str, open_id: str, incoming_text: str) -> None:
-        progress_sent = threading.Event()
-
         def send_progress() -> None:
             try:
-                progress_sent.set()
                 self.send_text_message(open_id, "⏳ 正在处理，我马上回来。")
             except Exception:
                 logger.exception("Failed to send progress message")
@@ -92,6 +89,7 @@ class FeishuBot:
                 self.send_text_message(open_id, builtin_reply)
                 return
             execution = self.executor.handle_text(incoming_text)
+            progress_timer.cancel()
             if execution.attachment_path and execution.attachment_kind:
                 if execution.attachment_kind == "image":
                     image_key = self.feishu_api.upload_image(execution.attachment_path)
@@ -99,7 +97,6 @@ class FeishuBot:
                 else:
                     file_key = self.feishu_api.upload_file(execution.attachment_path)
                     self.feishu_api.send_file_message(open_id, file_key)
-            progress_timer.cancel()
             self.send_text_message(open_id, execution.reply)
         except Exception as exc:
             progress_timer.cancel()
