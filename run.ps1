@@ -1,6 +1,14 @@
 $ErrorActionPreference = "Stop"
 $env:PYTHONUTF8 = "1"
 
+Set-Location $PSScriptRoot
+
+$exePath = Join-Path $PSScriptRoot "dist\CopilotCLI-Feishu.exe"
+if (Test-Path $exePath) {
+    & $exePath
+    exit $LASTEXITCODE
+}
+
 if (-not (Test-Path ".\.venv\Scripts\python.exe")) {
     Write-Host "Virtual environment not found. Create it first with: python -m venv .venv" -ForegroundColor Yellow
     exit 1

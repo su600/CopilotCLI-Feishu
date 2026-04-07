@@ -75,6 +75,8 @@ Then edit `.env` and fill:
 - `FEISHU_APP_SECRET`
 - `FEISHU_VERIFY_TOKEN`
 
+If you launch the packaged EXE directly, put the `.env` file next to the EXE or keep it in the project root and start it through `run.ps1`.
+
 If you want AI replies, also fill:
 
 - `OPENAI_API_KEY`
@@ -97,6 +99,26 @@ Or:
 ```powershell
 python main.py
 ```
+
+## Build a Windows EXE
+
+```powershell
+.\build.ps1
+```
+
+After the build finishes, the packaged executable will be in:
+
+```powershell
+.\dist\CopilotCLI-Feishu.exe
+```
+
+You can then launch the bot with:
+
+```powershell
+.\run.ps1
+```
+
+If the EXE exists, `run.ps1` will start it directly; otherwise it falls back to the virtualenv + `main.py` path.
 
 ## What you need to do in Feishu
 

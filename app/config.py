@@ -2,13 +2,31 @@
 from dataclasses import dataclass
 from functools import lru_cache
 import os
+import sys
 from pathlib import Path
 from typing import List
 
 from dotenv import load_dotenv
 
 
-load_dotenv()
+def _runtime_dir() -> Path:
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent
+    return Path(__file__).resolve().parent.parent
+
+
+def _load_env_files() -> None:
+    candidates = [Path.cwd() / ".env", _runtime_dir() / ".env"]
+    runtime_parent = _runtime_dir().parent
+    if runtime_parent not in {candidate.parent for candidate in candidates}:
+        candidates.append(runtime_parent / ".env")
+
+    for env_path in candidates:
+        if env_path.is_file():
+            load_dotenv(env_path)
+
+
+_load_env_files()
 
 
 @dataclass(frozen=True)
