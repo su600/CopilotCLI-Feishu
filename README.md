@@ -29,7 +29,12 @@ feishu-bot/
     __init__.py
     bot.py
     config.py
+    executor.py
+    feishu_api.py
     responder.py
+  tests/
+    __init__.py
+    test_bot.py
   .env.example
   main.py
   requirements.txt
@@ -41,7 +46,6 @@ feishu-bot/
 ### 1. Create and activate a virtual environment
 
 ```powershell
-cd C:\Users\su600\feishu-bot
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
@@ -64,6 +68,11 @@ If you want AI replies, also fill:
 - `OPENAI_API_KEY`
 - optionally `OPENAI_BASE_URL`
 - optionally `OPENAI_MODEL`
+
+Optionally, configure execution paths:
+
+- `WORK_DIR` – working directory for command execution (default: user home directory)
+- `ARTIFACT_DIR` – directory used for screenshots captured by the bot (default: `~/.feishu-bot/artifacts`); other generated files are not automatically stored there
 
 ## Run locally
 

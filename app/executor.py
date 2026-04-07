@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import subprocess
 import re
 import textwrap
@@ -17,9 +18,17 @@ class ExecutionResponse:
 
 
 class LocalExecutor:
-    def __init__(self) -> None:
-        self._cwd = Path(r"C:\Users\su600")
-        self._artifact_dir = Path(r"C:\Users\su600\.copilot\session-state\f80e8c7c-c0ff-4ebb-9abc-2f13b1c77301\files")
+    def __init__(self, work_dir: str = "", artifact_dir: str = "") -> None:
+        self._cwd = (
+            Path(os.path.expandvars(os.path.expanduser(work_dir))).resolve()
+            if work_dir
+            else Path.home()
+        )
+        self._artifact_dir = (
+            Path(os.path.expandvars(os.path.expanduser(artifact_dir))).resolve()
+            if artifact_dir
+            else Path.home() / ".feishu-bot" / "artifacts"
+        )
         self._recent_artifacts: List[Path] = []
 
     def help_text(self) -> str:
