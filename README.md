@@ -1,11 +1,20 @@
-# Feishu Bot for GitHub Copilot CLI
+# CopilotCLI-Feishu
+
+**通过飞书远程控制本地电脑上运行的 GitHub Copilot CLI**
+
+本项目的核心定位：在本地电脑上运行一个飞书机器人，让你可以在任何地方通过飞书私信向本地电脑下发指令，由本地的 GitHub Copilot CLI（或 PowerShell）来执行，并将结果返回到飞书。
+
+> **Use case**: You are away from your desk. You open Feishu on your phone, send a message to this bot, and it executes the command on your local machine – powered by GitHub Copilot CLI – and replies with the result.
+
+---
 
 A local Python Feishu private-chat bot that:
 
-- receives Feishu events over long connection
-- handles private text messages
-- replies back to the sender
-- optionally uses an OpenAI-compatible API for smart replies
+- bridges **Feishu** and **GitHub Copilot CLI** running on your local machine
+- receives instructions from Feishu private chat over a long connection (no public IP required)
+- routes natural-language requests to local `copilot` for intent resolution and execution
+- executes PowerShell commands directly when prefixed with `!`
+- sends back command output, files, and screenshots through Feishu
 
 ## What this version supports
 
@@ -13,6 +22,9 @@ A local Python Feishu private-chat bot that:
 - `im.message.receive_v1`
 - Feishu long connection / WebSocket event receiving
 - plain text replies
+- natural-language command routing via local GitHub Copilot CLI
+- direct PowerShell execution (`!` prefix)
+- file upload and send-back via Feishu
 - optional AI replies when `OPENAI_API_KEY` is configured
 
 ## What this version does not support yet
