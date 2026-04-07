@@ -27,7 +27,10 @@ logger = logging.getLogger("feishu-bot")
 class FeishuBot:
     def __init__(self) -> None:
         self.settings = get_settings()
-        self.executor = LocalExecutor()
+        self.executor = LocalExecutor(
+            work_dir=self.settings.work_dir,
+            artifact_dir=self.settings.artifact_dir,
+        )
         self.responder = Responder(self.settings, self.executor.help_text())
         self.feishu_api = FeishuAPIClient(self.settings)
         self._recent_message_ids: "OrderedDict[str, float]" = OrderedDict()

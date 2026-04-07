@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 from functools import lru_cache
 import os
+from pathlib import Path
 from typing import List
 
 from dotenv import load_dotenv
@@ -19,6 +20,8 @@ class Settings:
     openai_api_key: str
     openai_model: str
     bot_name: str
+    work_dir: str
+    artifact_dir: str
 
     @property
     def missing_feishu_settings(self) -> List[str]:
@@ -42,6 +45,8 @@ class Settings:
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
+    default_work_dir = str(Path.home())
+    default_artifact_dir = str(Path.home() / ".feishu-bot" / "artifacts")
     return Settings(
         feishu_app_id=os.getenv("FEISHU_APP_ID", "").strip(),
         feishu_app_secret=os.getenv("FEISHU_APP_SECRET", "").strip(),
@@ -50,4 +55,6 @@ def get_settings() -> Settings:
         openai_api_key=os.getenv("OPENAI_API_KEY", "").strip(),
         openai_model=os.getenv("OPENAI_MODEL", "gpt-4.1-mini").strip(),
         bot_name=os.getenv("BOT_NAME", "Feishu Local Bot").strip() or "Feishu Local Bot",
+        work_dir=os.getenv("WORK_DIR", "").strip() or default_work_dir,
+        artifact_dir=os.getenv("ARTIFACT_DIR", "").strip() or default_artifact_dir,
     )
