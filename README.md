@@ -72,7 +72,7 @@ If you want AI replies, also fill:
 Optionally, configure execution paths:
 
 - `WORK_DIR` – working directory for command execution (default: user home directory)
-- `ARTIFACT_DIR` – directory where generated artifacts are stored (default: `~/.feishu-bot/artifacts`)
+- `ARTIFACT_DIR` – directory used for screenshots captured by the bot (default: `~/.feishu-bot/artifacts`); other generated files are not automatically stored there
 
 ## Run locally
 

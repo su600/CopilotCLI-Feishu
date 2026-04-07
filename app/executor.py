@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import subprocess
 import re
 import textwrap
@@ -18,9 +19,15 @@ class ExecutionResponse:
 
 class LocalExecutor:
     def __init__(self, work_dir: str = "", artifact_dir: str = "") -> None:
-        self._cwd = Path(work_dir) if work_dir else Path.home()
+        self._cwd = (
+            Path(os.path.expandvars(os.path.expanduser(work_dir))).resolve()
+            if work_dir
+            else Path.home()
+        )
         self._artifact_dir = (
-            Path(artifact_dir) if artifact_dir else Path.home() / ".feishu-bot" / "artifacts"
+            Path(os.path.expandvars(os.path.expanduser(artifact_dir))).resolve()
+            if artifact_dir
+            else Path.home() / ".feishu-bot" / "artifacts"
         )
         self._recent_artifacts: List[Path] = []
 
