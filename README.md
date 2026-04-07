@@ -1,4 +1,4 @@
-# Feishu Bot
+# Feishu Bot for GitHub Copilot CLI
 
 A local Python Feishu private-chat bot that:
 
