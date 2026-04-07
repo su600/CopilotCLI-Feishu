@@ -15,7 +15,7 @@ from lark_oapi.api.im.v1 import (
 )
 from lark_oapi.event.custom import CustomizedEvent
 
-from app.config import get_settings
+from app.config import Settings, get_settings
 from app.feishu_api import FeishuAPIClient
 from app.executor import LocalExecutor
 from app.responder import Responder
@@ -25,9 +25,9 @@ logger = logging.getLogger("feishu-bot")
 
 
 class FeishuBot:
-    def __init__(self) -> None:
-        self.settings = get_settings()
-        self.executor = LocalExecutor(
+    def __init__(self, settings: Optional[Settings] = None, executor: Optional[LocalExecutor] = None) -> None:
+        self.settings = settings or get_settings()
+        self.executor = executor or LocalExecutor(
             work_dir=self.settings.work_dir,
             artifact_dir=self.settings.artifact_dir,
         )

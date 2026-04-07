@@ -5,8 +5,8 @@ Set-Location $PSScriptRoot
 
 $exePath = Join-Path $PSScriptRoot "dist\CopilotCLI-Feishu.exe"
 if (Test-Path $exePath) {
-    & $exePath
-    exit $LASTEXITCODE
+    Start-Process -FilePath $exePath
+    exit 0
 }
 
 if (-not (Test-Path ".\.venv\Scripts\python.exe")) {

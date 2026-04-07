@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 import os
-import subprocess
 import re
+import subprocess
 import textwrap
-from datetime import datetime
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
+
+from app.copilot_runtime import CopilotRuntime
+from app.config import get_settings
 
 
 @dataclass
@@ -18,7 +21,13 @@ class ExecutionResponse:
 
 
 class LocalExecutor:
-    def __init__(self, work_dir: str = "", artifact_dir: str = "") -> None:
+    def __init__(
+        self,
+        work_dir: str = "",
+        artifact_dir: str = "",
+        copilot_runtime: Optional[CopilotRuntime] = None,
+    ) -> None:
+        settings = get_settings()
         self._cwd = (
             Path(os.path.expandvars(os.path.expanduser(work_dir))).resolve()
             if work_dir
@@ -30,6 +39,7 @@ class LocalExecutor:
             else Path.home() / ".feishu-bot" / "artifacts"
         )
         self._recent_artifacts: List[Path] = []
+        self._copilot_runtime = copilot_runtime or CopilotRuntime(settings)
 
     def help_text(self) -> str:
         return (
@@ -199,19 +209,9 @@ class LocalExecutor:
         )
 
     def _run_copilot(self, prompt: str, timeout: int) -> str:
+        command = self._copilot_runtime.build_command(prompt)
         completed = subprocess.run(
-            [
-                "copilot.exe",
-                "-p",
-                prompt,
-                "--allow-all",
-                "--no-ask-user",
-                "--model",
-                "gpt-5.4",
-                "-s",
-                "--log-level",
-                "error",
-            ],
+            command,
             cwd=str(self._cwd),
             capture_output=True,
             text=True,
