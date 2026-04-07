@@ -14,7 +14,7 @@ A local Python Feishu private-chat bot that:
 - receives instructions from Feishu private chat over a long connection (no public IP required)
 - routes natural-language requests to local `copilot` for intent resolution and execution
 - executes PowerShell commands directly when prefixed with `!`
-- sends back command output, file contents, and screenshots through Feishu
+- sends back command output, files, and screenshots through Feishu
 
 ## What this version supports
 
