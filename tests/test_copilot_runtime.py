@@ -25,7 +25,7 @@ def make_settings(**overrides) -> Settings:
         "bot_name": "Feishu Local Bot",
         "work_dir": r"C:\Users\su600",
         "artifact_dir": r"C:\Users\su600\.feishu-bot\artifacts",
-        "env_file_path": r"C:\Users\su600\CopilotBridge\.env",
+        "env_file_path": str(Path(tempfile.gettempdir()) / ".env"),
     }
     defaults.update(overrides)
     return Settings(**defaults)
