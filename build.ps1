@@ -23,6 +23,20 @@ if ($LASTEXITCODE -ne 0) {
 $generatedIcon = Join-Path $PSScriptRoot "build\app-icon.ico"
 $resolvedIconPath = $IconPath
 if (-not $resolvedIconPath) {
+    $iconCandidates = @(
+        (Join-Path $PSScriptRoot "favicon.ico"),
+        (Join-Path $PSScriptRoot "favicon (1).ico"),
+        $generatedIcon
+    )
+    foreach ($candidate in $iconCandidates) {
+        if (Test-Path $candidate) {
+            $resolvedIconPath = $candidate
+            break
+        }
+    }
+}
+
+if (-not $resolvedIconPath) {
     $resolvedIconPath = $generatedIcon
 }
 

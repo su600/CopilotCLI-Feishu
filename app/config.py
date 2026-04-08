@@ -10,6 +10,7 @@ from dotenv import load_dotenv, set_key
 
 
 DEFAULT_COPILOT_MODEL = "gpt-5.4"
+APP_LOG_FILE_NAME = "CopilotCLI-Feishu.log"
 SUPPORTED_COPILOT_MODELS = (
     "gpt-5.4",
     "gpt-5.4-mini",
@@ -26,6 +27,10 @@ def _runtime_dir() -> Path:
     if getattr(sys, "frozen", False):
         return Path(sys.executable).resolve().parent
     return Path(__file__).resolve().parent.parent
+
+
+def get_runtime_dir() -> Path:
+    return _runtime_dir()
 
 
 def iter_env_candidates() -> Iterable[Path]:
@@ -50,6 +55,37 @@ def get_env_file_path() -> Path:
     if existing is not None:
         return existing
     return (_runtime_dir() / ".env").resolve()
+
+
+def iter_default_tray_icon_candidates() -> Iterable[Path]:
+    icon_names = ("favicon.ico", "favicon (1).ico")
+    runtime_dir = _runtime_dir()
+    for base_dir in (runtime_dir, runtime_dir.parent, runtime_dir.parent / "build"):
+        for icon_name in icon_names:
+            yield (base_dir / icon_name).resolve()
+    yield (runtime_dir.parent / "build" / "app-icon.ico").resolve()
+
+
+def resolve_tray_icon_path(configured_path: str = "") -> Optional[Path]:
+    if configured_path:
+        configured = Path(os.path.expandvars(os.path.expanduser(configured_path))).resolve()
+        if configured.is_file():
+            return configured
+
+    seen: set[Path] = set()
+    for candidate in iter_default_tray_icon_candidates():
+        if candidate in seen:
+            continue
+        seen.add(candidate)
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def get_app_log_path() -> Path:
+    log_dir = (_runtime_dir() / "logs").resolve()
+    log_dir.mkdir(parents=True, exist_ok=True)
+    return log_dir / APP_LOG_FILE_NAME
 
 
 def _load_env_files() -> None:
@@ -120,10 +156,7 @@ class Settings:
 
     @property
     def tray_icon_file(self) -> Optional[Path]:
-        if not self.tray_icon_path:
-            return None
-        path = Path(os.path.expandvars(os.path.expanduser(self.tray_icon_path))).resolve()
-        return path if path.is_file() else None
+        return resolve_tray_icon_path(self.tray_icon_path)
 
 
 @lru_cache(maxsize=1)

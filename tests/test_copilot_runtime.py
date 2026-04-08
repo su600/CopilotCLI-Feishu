@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 from dotenv import dotenv_values
 
-from app.config import Settings, persist_env_value
+from app.config import Settings, persist_env_value, resolve_tray_icon_path
 from app.copilot_runtime import CopilotRuntime
 
 
@@ -48,6 +48,28 @@ class ConfigPersistenceTests(unittest.TestCase):
                 os.environ.pop("COPILOT_MODEL", None)
             else:
                 os.environ["COPILOT_MODEL"] = previous
+
+    def test_resolve_tray_icon_path_prefers_repo_favicon(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_root = Path(temp_dir)
+            dist_dir = repo_root / "dist"
+            dist_dir.mkdir()
+            icon_path = repo_root / "favicon.ico"
+            icon_path.write_bytes(b"ico")
+
+            with patch("app.config._runtime_dir", return_value=dist_dir):
+                resolved = resolve_tray_icon_path("")
+
+        self.assertEqual(resolved, icon_path.resolve())
+
+    def test_resolve_tray_icon_path_uses_explicit_path_when_present(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            icon_path = Path(temp_dir) / "custom.ico"
+            icon_path.write_bytes(b"ico")
+
+            resolved = resolve_tray_icon_path(str(icon_path))
+
+        self.assertEqual(resolved, icon_path.resolve())
 
 
 class CopilotRuntimeTests(unittest.TestCase):

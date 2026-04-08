@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 import os
 import threading
 from pathlib import Path
@@ -13,6 +14,9 @@ from app.copilot_runtime import CopilotRuntime
 from app.executor import LocalExecutor
 
 
+logger = logging.getLogger("feishu-bot.tray")
+
+
 class TrayApplication:
     def __init__(self) -> None:
         self._settings = get_settings()
@@ -23,6 +27,7 @@ class TrayApplication:
         self._icon: Optional[pystray.Icon] = None
 
     def run(self) -> None:
+        logger.info("Initializing tray icon")
         self._icon = pystray.Icon(
             "CopilotCLI-Feishu",
             self._load_icon_image(),
@@ -32,7 +37,10 @@ class TrayApplication:
         self._icon.run(self._on_ready)
 
     def _on_ready(self, icon: pystray.Icon) -> None:
+        logger.info("Tray icon is ready")
+        icon.visible = True
         self._refresh_menu()
+        self._notify("CopilotCLI-Feishu", "已启动并最小化到系统托盘。")
         threading.Thread(target=self._bootstrap_background_services, daemon=True).start()
 
     def _bootstrap_background_services(self) -> None:
@@ -51,10 +59,12 @@ class TrayApplication:
         )
         bot = FeishuBot(settings=self._settings, executor=executor)
         try:
+            logger.info("Starting Feishu bot thread")
             self._set_bot_status("运行中")
             bot.start()
         except Exception as exc:
             message = str(exc).strip() or exc.__class__.__name__
+            logger.exception("Feishu bot failed to start")
             self._set_bot_status(f"启动失败：{message}")
             self._notify("Feishu 机器人启动失败", message)
 
@@ -67,12 +77,14 @@ class TrayApplication:
             status = self._copilot_runtime.ensure_ready()
         except Exception as exc:
             message = str(exc).strip() or exc.__class__.__name__
+            logger.warning("Copilot CLI check failed: %s", message)
             self._set_copilot_status(f"不可用：{message}")
             if notify:
                 self._notify("Copilot CLI 不可用", message)
             return
 
         summary = f"已关联：{Path(status.executable or 'copilot').name} / {self._copilot_runtime.current_model()}"
+        logger.info("Copilot CLI is ready: %s", summary)
         self._set_copilot_status(summary)
         if notify:
             self._notify("Copilot CLI 已就绪", status.detail)
@@ -81,9 +93,11 @@ class TrayApplication:
         try:
             selected = self._copilot_runtime.persist_model(model)
         except Exception as exc:
+            logger.exception("Failed to switch Copilot model")
             self._notify("模型切换失败", str(exc))
             return
 
+        logger.info("Switched Copilot model to %s", selected)
         self._set_copilot_status(f"模型已切换：{selected}")
         self._notify("Copilot 模型已更新", selected)
 
@@ -140,6 +154,7 @@ class TrayApplication:
         os.startfile(str(Path(self._settings.env_file_path).resolve().parent))
 
     def _quit(self, icon: pystray.Icon, item: pystray.MenuItem) -> None:
+        logger.info("Tray application is exiting")
         self._notify("CopilotCLI-Feishu", "程序即将退出。")
         icon.stop()
 
@@ -154,7 +169,9 @@ class TrayApplication:
     def _load_icon_image(self) -> Image.Image:
         custom_icon = self._settings.tray_icon_file
         if custom_icon is not None:
+            logger.info("Using tray icon file: %s", custom_icon)
             return Image.open(custom_icon).convert("RGBA")
+        logger.info("Using generated fallback tray icon")
         return self._build_placeholder_icon()
 
     @staticmethod

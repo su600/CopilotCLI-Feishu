@@ -95,7 +95,7 @@ Optionally, configure execution paths:
 - `ARTIFACT_DIR` – directory used for screenshots captured by the bot (default: `~/.feishu-bot/artifacts`); other generated files are not automatically stored there
 - `COPILOT_MODEL` – model used for local Copilot CLI execution (default: `gpt-5.4`)
 - `COPILOT_CLI_PATH` – explicit path to `copilot.exe` if it is not on `PATH`
-- `TRAY_ICON_PATH` – optional custom `.ico` path for the tray icon
+- `TRAY_ICON_PATH` – optional custom `.ico` path for the tray icon; if empty, the app will auto-detect `favicon.ico` / `favicon (1).ico` in the project root
 
 ## Run locally
 
@@ -136,6 +136,14 @@ You can then launch the bot with:
 ```
 
 If the EXE exists, `run.ps1` will start it directly in the background; otherwise it falls back to the virtualenv + `main.py` path.
+
+The packaged app writes startup logs to:
+
+```powershell
+.\dist\logs\CopilotCLI-Feishu.log
+```
+
+If the EXE seems to flash and disappear, check that log file first. It now records tray startup, chosen icon file, Copilot CLI readiness, and bot startup status.
 
 ## What you need to do in Feishu
 
