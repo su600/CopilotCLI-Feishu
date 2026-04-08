@@ -29,7 +29,7 @@ class TrayApplication:
     def run(self) -> None:
         logger.info("Initializing tray icon")
         self._icon = pystray.Icon(
-            "CopilotCLI-Feishu",
+            "CopilotBridge",
             self._load_icon_image(),
             self._settings.bot_name,
             self._build_menu(),
@@ -40,7 +40,7 @@ class TrayApplication:
         logger.info("Tray icon is ready")
         icon.visible = True
         self._refresh_menu()
-        self._notify("CopilotCLI-Feishu", "已启动并最小化到系统托盘。")
+        self._notify("CopilotBridge", "已启动并最小化到系统托盘。")
         threading.Thread(target=self._bootstrap_background_services, daemon=True).start()
 
     def _bootstrap_background_services(self) -> None:
@@ -155,7 +155,7 @@ class TrayApplication:
 
     def _quit(self, icon: pystray.Icon, item: pystray.MenuItem) -> None:
         logger.info("Tray application is exiting")
-        self._notify("CopilotCLI-Feishu", "程序即将退出。")
+        self._notify("CopilotBridge", "程序即将退出。")
         icon.stop()
 
     def _notify(self, title: str, message: str) -> None:

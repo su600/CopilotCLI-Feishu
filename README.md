@@ -1,4 +1,4 @@
-# CopilotCLI-Feishu
+# CopilotBridge
 
 **通过飞书远程控制本地电脑上运行的 GitHub Copilot CLI**
 
@@ -126,7 +126,7 @@ Or use your own `.ico` during packaging:
 After the build finishes, the packaged executable will be in:
 
 ```powershell
-.\dist\CopilotCLI-Feishu.exe
+.\dist\CopilotBridge.exe
 ```
 
 You can then launch the bot with:
@@ -140,7 +140,7 @@ If the EXE exists, `run.ps1` will start it directly in the background; otherwise
 The packaged app writes startup logs to:
 
 ```powershell
-.\dist\logs\CopilotCLI-Feishu.log
+.\dist\logs\CopilotBridge.log
 ```
 
 If the EXE seems to flash and disappear, check that log file first. It now records tray startup, chosen icon file, Copilot CLI readiness, and bot startup status.
