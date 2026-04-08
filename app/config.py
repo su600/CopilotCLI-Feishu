@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 from functools import lru_cache
 import os
+import subprocess
 import sys
 from pathlib import Path
 from typing import Iterable, List, Optional
@@ -9,6 +10,7 @@ from typing import Iterable, List, Optional
 from dotenv import load_dotenv, set_key
 
 
+SUBPROCESS_CREATIONFLAGS: int = getattr(subprocess, "CREATE_NO_WINDOW", 0) if sys.platform == "win32" else 0
 DEFAULT_COPILOT_MODEL = "gpt-5.4"
 APP_LOG_FILE_NAME = "CopilotBridge.log"
 SUPPORTED_COPILOT_MODELS = (

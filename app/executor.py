@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import List, Optional
 
 from app.copilot_runtime import CopilotRuntime
-from app.config import get_settings
+from app.config import get_settings, SUBPROCESS_CREATIONFLAGS
 
 
 @dataclass
@@ -130,6 +130,7 @@ class LocalExecutor:
             timeout=60,
             encoding="utf-8",
             errors="replace",
+            creationflags=SUBPROCESS_CREATIONFLAGS,
         )
         if completed.returncode != 0 or not output_path.is_file():
             stderr = (completed.stderr or "").strip()
@@ -218,6 +219,7 @@ class LocalExecutor:
             timeout=timeout,
             encoding="utf-8",
             errors="replace",
+            creationflags=SUBPROCESS_CREATIONFLAGS,
         )
         stdout = (completed.stdout or "").strip()
         stderr = (completed.stderr or "").strip()
@@ -243,6 +245,7 @@ class LocalExecutor:
             timeout=timeout,
             encoding="utf-8",
             errors="replace",
+            creationflags=SUBPROCESS_CREATIONFLAGS,
         )
         stdout = (completed.stdout or "").strip()
         stderr = (completed.stderr or "").strip()
