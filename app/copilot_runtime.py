@@ -9,6 +9,7 @@ from app.config import (
     DEFAULT_COPILOT_MODEL,
     SUPPORTED_COPILOT_MODELS,
     Settings,
+    SUBPROCESS_CREATIONFLAGS,
     persist_env_value,
 )
 
@@ -58,6 +59,7 @@ class CopilotRuntime:
             timeout=timeout,
             encoding="utf-8",
             errors="replace",
+            creationflags=SUBPROCESS_CREATIONFLAGS,
         )
         if completed.returncode != 0:
             detail = (completed.stderr or completed.stdout or f"exit code {completed.returncode}").strip()

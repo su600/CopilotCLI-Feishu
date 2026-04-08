@@ -102,7 +102,9 @@ class TrayApplication:
         self._notify("Copilot 模型已更新", selected)
 
     def _switch_model_action(self, model: str):
-        return lambda icon, item: self._switch_model(model)
+        def action(icon: pystray.Icon, item: pystray.MenuItem) -> None:
+            threading.Thread(target=self._switch_model, args=(model,), daemon=True).start()
+        return action
 
     def _build_menu(self) -> pystray.Menu:
         current_model = self._copilot_runtime.current_model()
