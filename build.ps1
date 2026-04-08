@@ -69,7 +69,7 @@ image.save(target, format="ICO", sizes=[(256, 256), (128, 128), (64, 64), (48, 4
     }
 }
 
-$specPath = Join-Path $PSScriptRoot "CopilotCLI-Feishu.spec"
+$specPath = Join-Path $PSScriptRoot "CopilotBridge.spec"
 if (Test-Path $specPath) {
     Remove-Item $specPath -Force
 }
@@ -79,7 +79,7 @@ if (Test-Path $specPath) {
     --clean `
     --onefile `
     --windowed `
-    --name "CopilotCLI-Feishu" `
+    --name "CopilotBridge" `
     --icon $resolvedIconPath `
     --collect-submodules lark_oapi `
     --collect-submodules requests `
@@ -91,4 +91,4 @@ if ($LASTEXITCODE -ne 0) {
     throw "PyInstaller build failed."
 }
 
-Write-Host "Build complete: dist\CopilotCLI-Feishu.exe" -ForegroundColor Green
+Write-Host "Build complete: dist\CopilotBridge.exe" -ForegroundColor Green

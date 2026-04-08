@@ -44,7 +44,7 @@ def acquire_single_instance() -> bool:
     kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
     kernel32.CloseHandle.restype = wintypes.BOOL
 
-    mutex_name = "Local\\CopilotCLI-Feishu-Tray"
+    mutex_name = "Local\\CopilotBridge-Tray"
     handle = kernel32.CreateMutexW(None, False, mutex_name)
     if not handle:
         raise RuntimeError("无法创建单实例互斥锁。")
@@ -65,7 +65,7 @@ def main() -> None:
         if not acquire_single_instance():
             message = f"程序已经在后台运行。\n如果没看到图标，请先展开系统托盘隐藏图标。\n\n日志文件：{log_path}"
             logger.info("Another tray instance is already running")
-            show_message_box("CopilotCLI-Feishu", message)
+            show_message_box("CopilotBridge", message)
             return
 
         logger.info("Starting tray application")
@@ -74,7 +74,7 @@ def main() -> None:
     except Exception as exc:
         logger.exception("Tray application exited unexpectedly")
         show_message_box(
-            "CopilotCLI-Feishu 启动失败",
+            "CopilotBridge 启动失败",
             f"{exc}\n\n详细日志：{log_path}",
         )
         raise SystemExit(1) from exc

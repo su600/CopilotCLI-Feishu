@@ -3,7 +3,7 @@ $env:PYTHONUTF8 = "1"
 
 Set-Location $PSScriptRoot
 
-$exePath = Join-Path $PSScriptRoot "dist\CopilotCLI-Feishu.exe"
+$exePath = Join-Path $PSScriptRoot "dist\CopilotBridge.exe"
 if (Test-Path $exePath) {
     Start-Process -FilePath $exePath
     exit 0

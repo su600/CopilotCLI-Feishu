@@ -10,7 +10,7 @@ from dotenv import load_dotenv, set_key
 
 
 DEFAULT_COPILOT_MODEL = "gpt-5.4"
-APP_LOG_FILE_NAME = "CopilotCLI-Feishu.log"
+APP_LOG_FILE_NAME = "CopilotBridge.log"
 SUPPORTED_COPILOT_MODELS = (
     "gpt-5.4",
     "gpt-5.4-mini",
